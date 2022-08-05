@@ -395,13 +395,13 @@ class TrainYolov7Factory(dataprocess.CTaskFactory):
     def __init__(self):
         dataprocess.CTaskFactory.__init__(self)
         # Set process information as string here
-        self.info.name = "train_yolov7"
+        self.info.name = "train_yolo_v7"
         self.info.shortDescription = "Train YOLOv7 object detection models."
         self.info.description = "This plugin proposes train on YOLOv7 object detection models."
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Detection"
         self.info.version = "1.0.0"
-        # self.info.iconPath = "your path to a specific icon"
+        self.info.iconPath = "icons/icon.png"
         self.info.authors = "Wang, Chien-Yao and Bochkovskiy, Alexey and Liao, Hong-Yuan Mark"
         self.info.article = "YOLOv7: Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors"
         self.info.journal = "arxiv"
