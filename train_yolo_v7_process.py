@@ -120,7 +120,6 @@ class TrainYolov7(dnntrain.TrainProcess):
 
         # Conversion from Ikomia dataset to YoloV5
         print("Preparing dataset...")
-        print(param.cfg)
         dataset_yaml = prepare_dataset(dataset_input, param.cfg["dataset_folder"],
                                        param.cfg["dataset_split_ratio"])
 
