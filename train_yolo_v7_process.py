@@ -268,7 +268,6 @@ class TrainYolov7(dnntrain.TrainProcess):
         # Train
         logger.info(self.opt)
         if not self.opt.evolve:
-            tb_writer = None  # init loggers
             if self.opt.global_rank in [-1, 0]:
                 prefix = colorstr('tensorboard: ')
                 logger.info(
