@@ -16,21 +16,18 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from ikomia import core, dataprocess
+from ikomia import utils, core, dataprocess
 import copy
-# Your imports below
 from ikomia.core.task import TaskParam
 from ikomia.dnn import dnntrain
 from train_yolo_v7.ikutils import prepare_dataset, download_model
 import sys
-from distutils.util import strtobool
 import argparse
 import logging
 import os
 import random
 import time
 from pathlib import Path
-
 import numpy as np
 import torch.distributed as dist
 import torch.utils.data
@@ -79,7 +76,7 @@ class TrainYolov7Param(TaskParam):
     def setParamMap(self, param_map):
         self.cfg["dataset_folder"] = param_map["dataset_folder"]
         self.cfg["model_name"] = param_map["model_name"]
-        self.cfg["coco_pretrain"] = strtobool(param_map["coco_pretrain"])
+        self.cfg["coco_pretrain"] = utils.strtobool(param_map["coco_pretrain"])
         self.cfg["model_path"] = param_map["model_path"]
         self.cfg["epochs"] = int(param_map["epochs"])
         self.cfg["batch_size"] = int(param_map["batch_size"])
