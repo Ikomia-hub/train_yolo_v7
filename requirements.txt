@@ -3,7 +3,7 @@
 # Base ----------------------------------------
 matplotlib>=3.2.2
 numpy>=1.20
-Pillow>=7.1.2
+Pillow==8.1.0
 PyYAML>=5.3.1
 requests>=2.23.0
 scipy>=1.4.1
@@ -13,7 +13,7 @@ tqdm>=4.41.0
 protobuf<4.21.3
 
 # Logging -------------------------------------
-tensorboard>=2.4.1
+tensorboard>=2.5.0
 # wandb
 
 # Plotting ------------------------------------
@@ -34,5 +34,5 @@ ipython  # interactive notebook
 psutil  # system utilization
 thop  # FLOPs computation
 # albumentations>=1.0.3
-# pycocotools>=2.0  # COCO mAP
+# pycocotools>=2.0.4  # COCO mAP
 # roboflow
