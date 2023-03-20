@@ -100,13 +100,13 @@ class TrainYolov7Widget(core.CWorkflowTaskWidget):
         layout_ptr = qtconversion.PyQtToQt(self.grid_layout)
 
         # Set widget layout
-        self.setLayout(layout_ptr)
+        self.set_layout(layout_ptr)
 
     def on_custom_hyp_changed(self, int):
         self.label_hyp.setVisible(self.check_hyp.isChecked())
         self.browse_hyp_file.setVisible(self.check_hyp.isChecked())
 
-    def onApply(self):
+    def on_apply(self):
         # Apply button clicked slot
         # Get parameters from widget
         self.parameters.cfg["dataset_folder"] = self.browse_dataset_folder.path
@@ -123,7 +123,7 @@ class TrainYolov7Widget(core.CWorkflowTaskWidget):
         self.parameters.cfg["output_folder"] = self.browse_out_folder.path
 
         # Send signal to launch the process
-        self.emitApply(self.parameters)
+        self.emit_apply(self.parameters)
 
 
 # --------------------
