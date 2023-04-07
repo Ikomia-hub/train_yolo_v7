@@ -34,7 +34,11 @@ def prepare_dataset(ikdataset, dataset_folder, split_ratio):
     os.makedirs(train_label_folder, exist_ok=True)
     os.makedirs(val_label_folder, exist_ok=True)
 
-    images = ikdataset.data["images"]
+    try:
+        images = ikdataset.data["images"]
+    except:
+        raise Exception("Input dataset is empty!")
+
     val_size = int((1-split_ratio) * len(images))
     val_indices = random.sample(range(len(images)), k=val_size)
     index = 0
