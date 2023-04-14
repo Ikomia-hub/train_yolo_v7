@@ -56,8 +56,8 @@ class TrainYolov7Widget(core.CWorkflowTaskWidget):
         self.combo_model_name.setCurrentText(self.parameters.cfg["model_name"])
 
         # Use COCO pretrain
-        self.check_coco_pretrain = pyqtutils.append_check(self.grid_layout, "Use COCO pretrain",
-                                                          self.parameters.cfg["coco_pretrain"])
+        self.check_use_pretrained = pyqtutils.append_check(self.grid_layout, "Use COCO pretrain",
+                                                          self.parameters.cfg["use_pretrained"])
 
         # Epochs
         self.spin_epochs = pyqtutils.append_spin(self.grid_layout, "Epochs", self.parameters.cfg["epochs"])
@@ -72,14 +72,14 @@ class TrainYolov7Widget(core.CWorkflowTaskWidget):
                                                   self.parameters.cfg["test_imgsz"])
 
         # Hyper-parameters
-        custom_hyp = bool(self.parameters.cfg["custom_hyp_file"])
+        custom_hyp = bool(self.parameters.cfg["config"])
         self.check_hyp = QCheckBox("Custom hyper-parameters")
         self.check_hyp.setChecked(custom_hyp)
         self.grid_layout.addWidget(self.check_hyp, self.grid_layout.rowCount(), 0, 1, 2)
         self.check_hyp.stateChanged.connect(self.on_custom_hyp_changed)
 
         self.label_hyp = QLabel("Hyper-parameters file")
-        self.browse_hyp_file = pyqtutils.BrowseFileWidget(path=self.parameters.cfg["custom_hyp_file"],
+        self.browse_hyp_file = pyqtutils.BrowseFileWidget(path=self.parameters.cfg["config"],
                                                           tooltip="Select file",
                                                           mode=QFileDialog.ExistingFile)
 
@@ -115,10 +115,10 @@ class TrainYolov7Widget(core.CWorkflowTaskWidget):
         self.parameters.cfg["batch_size"] = self.spin_batch.value()
         self.parameters.cfg["train_imgsz"] = self.spin_train_imgsz.value()
         self.parameters.cfg["test_imgsz"] = self.spin_test_imgsz.value()
-        self.parameters.cfg["coco_pretrain"] = self.check_coco_pretrain.isChecked()
+        self.parameters.cfg["use_pretrained"] = self.check_use_pretrained.isChecked()
 
         if self.check_hyp.isChecked():
-            self.parameters.cfg["custom_hyp_file"] = self.browse_hyp_file.path
+            self.parameters.cfg["config"] = self.browse_hyp_file.path
 
         self.parameters.cfg["output_folder"] = self.browse_out_folder.path
 

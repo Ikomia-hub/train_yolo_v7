@@ -63,27 +63,27 @@ class TrainYolov7Param(TaskParam):
 
         self.cfg["dataset_folder"] = dataset_folder
         self.cfg["model_name"] = "yolov7"
-        self.cfg["coco_pretrain"] = True
+        self.cfg["use_pretrained"] = True
         self.cfg["model_path"] = ""
         self.cfg["epochs"] = 10
         self.cfg["batch_size"] = 16
         self.cfg["train_imgsz"] = 640
         self.cfg["test_imgsz"] = 640
         self.cfg["dataset_split_ratio"] = 0.9
-        self.cfg["custom_hyp_file"] = ""
+        self.cfg["config"] = ""
         self.cfg["output_folder"] = os.path.dirname(os.path.realpath(__file__)) + "/runs/"
 
     def set_values(self, param_map):
         self.cfg["dataset_folder"] = param_map["dataset_folder"]
         self.cfg["model_name"] = param_map["model_name"]
-        self.cfg["coco_pretrain"] = utils.strtobool(param_map["coco_pretrain"])
+        self.cfg["use_pretrained"] = utils.strtobool(param_map["use_pretrained"])
         self.cfg["model_path"] = param_map["model_path"]
         self.cfg["epochs"] = int(param_map["epochs"])
         self.cfg["batch_size"] = int(param_map["batch_size"])
         self.cfg["train_imgsz"] = int(param_map["train_imgsz"])
         self.cfg["test_imgsz"] = int(param_map["test_imgsz"])
         self.cfg["dataset_split_ratio"] = float(param_map["dataset_split_ratio"])
-        self.cfg["custom_hyp_file"] = param_map["custom_hyp_file"]
+        self.cfg["config"] = param_map["config"]
         self.cfg["output_folder"] = param_map["output_folder"]
 
 
@@ -101,6 +101,9 @@ class TrainYolov7(dnntrain.TrainProcess):
             self.set_param_object(TrainYolov7Param())
         else:
             self.set_param_object(copy.deepcopy(param))
+        
+        self.enable_mlflow(False)
+
 
     def get_progress_steps(self):
         # Function returning the number of progress steps for this process
@@ -186,16 +189,16 @@ class TrainYolov7(dnntrain.TrainProcess):
         opt.data = dataset_yaml
 
         # Override with GUI parameters
-        if param.cfg["custom_hyp_file"]:
-            opt.hyp = param.cfg["custom_hyp_file"]
+        if param.cfg["config"]:
+            opt.hyp = param.cfg["config"]
         else:
             opt.hyp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "yolov7", opt.hyp)
 
         models_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "models")
-        opt.weights = param.cfg["model_path"] if not param.cfg["coco_pretrain"] else \
+        opt.weights = param.cfg["model_path"] if not param.cfg["use_pretrained"] else \
             os.path.join(models_folder, param.cfg["model_name"] + ".pt")
         if not os.path.isfile(opt.weights):
-            if param.cfg["coco_pretrain"]:
+            if param.cfg["use_pretrained"]:
                 download_model(param.cfg["model_name"], models_folder)
         opt.epochs = param.cfg["epochs"]
         opt.batch_size = param.cfg["batch_size"]
@@ -256,7 +259,7 @@ class TrainYolov7(dnntrain.TrainProcess):
         with open(self.opt.hyp) as f:
             hyp = yaml.load(f, Loader=yaml.SafeLoader)  # load hyps
 
-        if not param.cfg["custom_hyp_file"]:
+        if not param.cfg["config"]:
             nbs = 64  # nominal batch size
             hyp["lr0"] = hyp["lr0"] / nbs * self.opt.batch_size
 
