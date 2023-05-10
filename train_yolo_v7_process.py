@@ -60,7 +60,7 @@ class TrainYolov7Param(TaskParam):
         dataset_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "dataset")
         os.makedirs(models_folder, exist_ok=True)
         os.makedirs(dataset_folder, exist_ok=True)
-
+        self.cfg["model_name_or_path"] = ""
         self.cfg["dataset_folder"] = dataset_folder
         self.cfg["model_name"] = "yolov7"
         self.cfg["use_pretrained"] = True
@@ -74,6 +74,7 @@ class TrainYolov7Param(TaskParam):
         self.cfg["output_folder"] = os.path.dirname(os.path.realpath(__file__)) + "/runs/"
 
     def set_values(self, param_map):
+        self.cfg["model_name_or_path"] = param_map["model_name_or_path"]
         self.cfg["dataset_folder"] = param_map["dataset_folder"]
         self.cfg["model_name"] = param_map["model_name"]
         self.cfg["use_pretrained"] = utils.strtobool(param_map["use_pretrained"])
@@ -123,6 +124,12 @@ class TrainYolov7(dnntrain.TrainProcess):
         dataset_yaml = prepare_dataset(dataset_input, param.cfg["dataset_folder"],
                                        param.cfg["dataset_split_ratio"])
 
+        if param.cfg["model_name_or_path"] != "":
+                if os.path.isfile(param.cfg["model_name_or_path"]):
+                    param.cfg["model_path"] = param.cfg["model_name_or_path"]
+                    param.cfg["use_pretrained"] = False
+                else: 
+                    param.cfg["model_name"] = param.cfg["model_name_or_path"]
         print("Collecting configuration parameters...")
         self.opt = self.load_config(dataset_yaml)
 
