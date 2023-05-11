@@ -60,11 +60,10 @@ class TrainYolov7Param(TaskParam):
         dataset_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "dataset")
         os.makedirs(models_folder, exist_ok=True)
         os.makedirs(dataset_folder, exist_ok=True)
-        self.cfg["model_name_or_path"] = ""
         self.cfg["dataset_folder"] = dataset_folder
         self.cfg["model_name"] = "yolov7"
         self.cfg["use_pretrained"] = True
-        self.cfg["model_path"] = ""
+        self.cfg["model_weight_file"] = ""
         self.cfg["epochs"] = 10
         self.cfg["batch_size"] = 16
         self.cfg["train_imgsz"] = 640
@@ -74,11 +73,10 @@ class TrainYolov7Param(TaskParam):
         self.cfg["output_folder"] = os.path.dirname(os.path.realpath(__file__)) + "/runs/"
 
     def set_values(self, param_map):
-        self.cfg["model_name_or_path"] = param_map["model_name_or_path"]
         self.cfg["dataset_folder"] = param_map["dataset_folder"]
         self.cfg["model_name"] = param_map["model_name"]
         self.cfg["use_pretrained"] = utils.strtobool(param_map["use_pretrained"])
-        self.cfg["model_path"] = param_map["model_path"]
+        self.cfg["model_weight_file"] = param_map["model_weight_file"]
         self.cfg["epochs"] = int(param_map["epochs"])
         self.cfg["batch_size"] = int(param_map["batch_size"])
         self.cfg["train_imgsz"] = int(param_map["train_imgsz"])
@@ -124,12 +122,6 @@ class TrainYolov7(dnntrain.TrainProcess):
         dataset_yaml = prepare_dataset(dataset_input, param.cfg["dataset_folder"],
                                        param.cfg["dataset_split_ratio"])
 
-        if param.cfg["model_name_or_path"] != "":
-                if os.path.isfile(param.cfg["model_name_or_path"]):
-                    param.cfg["model_path"] = param.cfg["model_name_or_path"]
-                    param.cfg["use_pretrained"] = False
-                else: 
-                    param.cfg["model_name"] = param.cfg["model_name_or_path"]
         print("Collecting configuration parameters...")
         self.opt = self.load_config(dataset_yaml)
 
@@ -202,7 +194,7 @@ class TrainYolov7(dnntrain.TrainProcess):
             opt.hyp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "yolov7", opt.hyp)
 
         models_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "models")
-        opt.weights = param.cfg["model_path"] if not param.cfg["use_pretrained"] else \
+        opt.weights = param.cfg["model_weight_file"] if not param.cfg["use_pretrained"] else \
             os.path.join(models_folder, param.cfg["model_name"] + ".pt")
         if not os.path.isfile(opt.weights):
             if param.cfg["use_pretrained"]:
