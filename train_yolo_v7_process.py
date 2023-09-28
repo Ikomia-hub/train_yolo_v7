@@ -394,7 +394,6 @@ class TrainYolov7Factory(dataprocess.CTaskFactory):
         # Set process information as string here
         self.info.name = "train_yolo_v7"
         self.info.short_description = "Train YOLOv7 object detection models."
-        self.info.description = "This plugin proposes train on YOLOv7 object detection models."
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Detection"
         self.info.version = "1.1.0"
@@ -407,7 +406,8 @@ class TrainYolov7Factory(dataprocess.CTaskFactory):
         # URL of documentation
         self.info.documentation_link = ""
         # Code source repository
-        self.info.repository = "https://github.com/WongKinYiu/yolov7"
+        self.info.repository = "https://github.com/Ikomia-hub/train_yolo_v7"
+        self.info.original_repository = "https://github.com/WongKinYiu/yolov7"
         # Keywords used for search
         self.info.keywords = "yolo, v7, object, detection, real-time, coco"
 
