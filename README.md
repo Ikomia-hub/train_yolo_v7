@@ -21,7 +21,7 @@
 
 Train on YOLOv7 object detection models.
 
-![Desk object detection](https://raw.githubusercontent.com/Ikomia-hub/infer_yolo_v8/main/icons/output.jpg)
+![Desk object detection](https://raw.githubusercontent.com/Ikomia-hub/train_yolo_v7/main/icons/output.jpg)
 
 ## :rocket: Use with Ikomia API
 
