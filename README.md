@@ -73,8 +73,18 @@ Ikomia Studio offers a friendly UI with the same features as the API.
 - **epochs** (int) - default '10': Number of complete passes through the training dataset.
 - **batch_size** (int) - default '16': Number of samples processed before the model is updated.
 - **dataset_split_ratio** (float) – default '0.9': Divide the dataset into train and evaluation sets ]0, 1[.
-- **output_folder** (str, *optional*): path to where the model will be saved. 
+- **output_folder** (str, *optional*): Path to where the model will be saved. 
 - **config_file** (str, *optional*): Path to hyperparameters configuration file .yaml. 
+- **dataset_folder** (str, *optional*): Path to dataset folder.
+- **model_weight_file** (str, *optional*): Path to pretrained model weights. Can be used to fine tune a model.
+- **model_name** (str) - default 'yolov7': Model architecture to be trained. Should be one of :
+    - yolov7
+    - yolov7-d6
+    - yolov7-e6
+    - yolov7-e6e
+    - yolov7-tiny
+    - yolov7-w6
+    - yolov7x
 
 **Parameters** should be in **strings format**  when added to the dictionary.
 
