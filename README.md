@@ -102,7 +102,7 @@ train.set_parameters({
     "epochs": "5",
     "train_imgsz": "640",
     "test_imgsz": "640",
-    "dataset_split_ratio": "90"
+    "dataset_split_ratio": "0.9"
 })
 
 # Launch your training on your data
