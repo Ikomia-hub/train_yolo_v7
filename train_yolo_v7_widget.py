@@ -87,9 +87,9 @@ class TrainYolov7Widget(core.CWorkflowTaskWidget):
         self.browse_hyp_file.setVisible(custom_hyp)
 
         # Model weight file
-        self.browse_model_weight_file = pyqtutils.append_browse_file(self.grid_layout, "Model weight file",
-                                                                     self.parameters.cfg["model_weight_file"],
-                                                                     "Select file", QFileDialog.ExistingFile)
+        self.browse_model_weight_file = pyqtutils.append_browse_file(self.grid_layout, label="Model weight file",
+                                                                     path=self.parameters.cfg["model_weight_file"],
+                                                                     tooltip="Select file", mode=QFileDialog.ExistingFile)
         # Output folder
         self.browse_out_folder = pyqtutils.append_browse_file(self.grid_layout, label="Output folder",
                                                               path=self.parameters.cfg["output_folder"],
