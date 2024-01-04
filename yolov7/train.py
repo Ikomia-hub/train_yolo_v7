@@ -86,9 +86,14 @@ def train(hyp, opt, device, on_epoch_end, tb_writer=None):
         with torch_distributed_zero_first(rank):
             attempt_download(weights)  # download if not found locally
         ckpt = torch_load(weights, device)  # load checkpoint
-        model = Model(opt.cfg or ckpt['model'].yaml, ch=3, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
+        if 'model' in ckpt:
+            model = Model(opt.cfg or ckpt['model'].yaml, ch=3, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
+            state_dict = ckpt['model'].float().state_dict()  # to FP32
+        else:
+            model = Model(ckpt['yaml'], ch=3, nc=nc, anchors=hyp.get('anchors')).to(device)
+            state_dict = ckpt['state_dict']
+
         exclude = ['anchor'] if (opt.cfg or hyp.get('anchors')) and not opt.resume else []  # exclude keys
-        state_dict = ckpt['model'].float().state_dict()  # to FP32
         state_dict = intersect_dicts(state_dict, model.state_dict(), exclude=exclude)  # intersect
         model.load_state_dict(state_dict, strict=False)  # load
         logger.info('Transferred %g/%g items from %s' % (len(state_dict), len(model.state_dict()), weights))  # report
@@ -218,9 +223,8 @@ def train(hyp, opt, device, on_epoch_end, tb_writer=None):
             results_file.write_text(ckpt['training_results'])  # write results.txt
 
         # Epochs
-        start_epoch = ckpt['epoch'] + 1
-        if opt.resume:
-            assert start_epoch > 0, '%s training to %g epochs is finished, nothing to resume.' % (weights, epochs)
+        start_epoch = 0
+        # Always train from epoch 0 for simplicity
         if epochs < start_epoch:
             logger.info('%s has been trained for %g epochs. Fine-tuning for %g additional epochs.' %
                         (weights, ckpt['epoch'], epochs))
@@ -454,9 +458,14 @@ def train(hyp, opt, device, on_epoch_end, tb_writer=None):
 
             # Save model
             if (not opt.nosave) or (final_epoch and not opt.evolve):  # if save
-                ckpt = {'state_dict': deepcopy(ema.ema).half().state_dict(),
+                ckpt = {'epoch': epoch,
+                        'best_fitness': best_fitness,
+                        'training_results': results_file.read_text(),
+                        'state_dict': deepcopy(ema.ema).half().state_dict(),
                         'names': names,
-                        'yaml': model.yaml}
+                        'yaml': model.yaml,
+                        'optimizer': optimizer.state_dict(),
+                        'updates': ema.updates}
 
                 # Save last, best and delete
                 torch.save(ckpt, last)

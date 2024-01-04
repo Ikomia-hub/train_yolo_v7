@@ -62,7 +62,6 @@ class TrainYolov7Param(TaskParam):
         os.makedirs(dataset_folder, exist_ok=True)
         self.cfg["dataset_folder"] = dataset_folder
         self.cfg["model_name"] = "yolov7"
-        self.cfg["use_pretrained"] = True
         self.cfg["model_weight_file"] = ""
         self.cfg["epochs"] = 10
         self.cfg["batch_size"] = 16
@@ -75,7 +74,6 @@ class TrainYolov7Param(TaskParam):
     def set_values(self, param_map):
         self.cfg["dataset_folder"] = param_map["dataset_folder"]
         self.cfg["model_name"] = param_map["model_name"]
-        self.cfg["use_pretrained"] = utils.strtobool(param_map["use_pretrained"])
         self.cfg["model_weight_file"] = param_map["model_weight_file"]
         self.cfg["epochs"] = int(param_map["epochs"])
         self.cfg["batch_size"] = int(param_map["batch_size"])
@@ -194,11 +192,10 @@ class TrainYolov7(dnntrain.TrainProcess):
             opt.hyp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "yolov7", opt.hyp)
 
         models_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "models")
-        opt.weights = param.cfg["model_weight_file"] if not param.cfg["use_pretrained"] else \
+        opt.weights = param.cfg["model_weight_file"] if param.cfg["model_weight_file"] != "" else \
             os.path.join(models_folder, param.cfg["model_name"] + ".pt")
         if not os.path.isfile(opt.weights):
-            if param.cfg["use_pretrained"]:
-                download_model(param.cfg["model_name"], models_folder)
+            download_model(param.cfg["model_name"], models_folder)
         opt.epochs = param.cfg["epochs"]
         opt.batch_size = param.cfg["batch_size"]
         opt.img_size = [param.cfg["train_imgsz"], param.cfg["test_imgsz"]]
@@ -396,7 +393,7 @@ class TrainYolov7Factory(dataprocess.CTaskFactory):
         self.info.short_description = "Train YOLOv7 object detection models."
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Detection"
-        self.info.version = "1.1.0"
+        self.info.version = "2.0.0"
         self.info.icon_path = "icons/icon.png"
         self.info.authors = "Wang, Chien-Yao and Bochkovskiy, Alexey and Liao, Hong-Yuan Mark"
         self.info.article = "YOLOv7: Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors"

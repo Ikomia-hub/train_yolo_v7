@@ -55,10 +55,6 @@ class TrainYolov7Widget(core.CWorkflowTaskWidget):
 
         self.combo_model_name.setCurrentText(self.parameters.cfg["model_name"])
 
-        # Use COCO pretrain
-        self.check_use_pretrained = pyqtutils.append_check(self.grid_layout, "Use COCO pretrain",
-                                                          self.parameters.cfg["use_pretrained"])
-
         # Epochs
         self.spin_epochs = pyqtutils.append_spin(self.grid_layout, "Epochs", self.parameters.cfg["epochs"])
 
@@ -90,6 +86,10 @@ class TrainYolov7Widget(core.CWorkflowTaskWidget):
         self.label_hyp.setVisible(custom_hyp)
         self.browse_hyp_file.setVisible(custom_hyp)
 
+        # Model weight file
+        self.browse_model_weight_file = pyqtutils.append_browse_file(self.grid_layout, "Model weight file",
+                                                                     self.parameters.cfg["model_weight_file"],
+                                                                     "Select file", QFileDialog.ExistingFile)
         # Output folder
         self.browse_out_folder = pyqtutils.append_browse_file(self.grid_layout, label="Output folder",
                                                               path=self.parameters.cfg["output_folder"],
@@ -115,7 +115,7 @@ class TrainYolov7Widget(core.CWorkflowTaskWidget):
         self.parameters.cfg["batch_size"] = self.spin_batch.value()
         self.parameters.cfg["train_imgsz"] = self.spin_train_imgsz.value()
         self.parameters.cfg["test_imgsz"] = self.spin_test_imgsz.value()
-        self.parameters.cfg["use_pretrained"] = self.check_use_pretrained.isChecked()
+        self.parameters.cfg["model_weight_file"] = self.browse_model_weight_file.path
 
         if self.check_hyp.isChecked():
             self.parameters.cfg["config_file"] = self.browse_hyp_file.path
